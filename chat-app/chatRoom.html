@@ -1,0 +1,139 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; }
+        #room-list { width: 20%; border-right: 1px solid #ccc; padding: 10px; }
+        #chat-container { width: 80%; margin: auto; border: 1px solid #ccc; padding: 10px; }
+        #messages { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; }
+        input, button { margin: 5px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div id="room-list">
+        <h3>Active Rooms</h3>
+        <ul id="rooms"></ul>
+    </div>
+    <div>
+        <h2>Real-Time Chat</h2>
+        <div id="login-container">
+            <input type="text" id="username" placeholder="Enter username">
+            <input type="text" id="room" placeholder="Enter room name">
+            <button onclick="joinChat()">Join</button>
+        </div>
+        <div id="chat-container" style="display: none;">
+            <div id="messages"></div>
+            <input type="text" id="message" placeholder="Type a message">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        let socket, username, room;
+
+        function joinChat() {
+            username = document.getElementById('username').value;
+            room = document.getElementById('room').value;
+            if (!username || !room) return alert('Username and Room are required!');
+
+            socket = new WebSocket('ws://localhost:3000');
+
+            socket.onopen = () => {
+                socket.send(JSON.stringify({ type: 'join', username, room }));
+            };
+
+            socket.onmessage = (event) => {
+                let data = JSON.parse(event.data);
+                
+                if (data.type === 'error') {
+                    alert(data.message);
+                    socket.close();
+                    return;
+                }
+                
+                if (data.type === 'update' || data.type === 'message') {
+                    document.getElementById('login-container').style.display = 'none';
+                    document.getElementById('chat-container').style.display = 'block';
+                    let messageDiv = document.createElement('div');
+                    messageDiv.innerHTML = `<strong>${data.username || 'System'}</strong>: ${data.text || data.message} <small>${data.time || ''}</small>`;
+                    document.getElementById('messages').appendChild(messageDiv);
+                }
+
+                if (data.type === 'rooms') {
+                    updateRoomList(data.rooms);
+                }
+            };
+        }
+
+        function sendMessage() {
+            let text = document.getElementById('message').value;
+            if (text.trim() === '') return;
+            socket.send(JSON.stringify({ type: 'message', username, text, room }));
+            document.getElementById('message').value = '';
+        }
+
+        function updateRoomList(rooms) {
+            let roomList = document.getElementById('rooms');
+            roomList.innerHTML = '';
+            rooms.forEach(roomName => {
+                let li = document.createElement('li');
+                li.textContent = roomName;
+                li.onclick = () => joinNewRoom(roomName);
+                roomList.appendChild(li);
+            });
+        }
+
+        function joinNewRoom(selectedRoom) {
+            if (!socket || socket.readyState !== WebSocket.OPEN) return;
+            room = selectedRoom;
+            socket.send(JSON.stringify({ type: 'join', username, room }));
+        }
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+// Get room and username from URL
+const urlParams = new URLSearchParams(window.location.search);
+const room = urlParams.get('room');
+const username = urlParams.get('user');
+
+socket.emit('joinRoom', { username, room });
+
+socket.on('message', (msg) => {
+    const messages = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.innerText = msg;
+    messages.appendChild(div);
+});
+
+document.getElementById('send').addEventListener('click', () => {
+    const message = document.getElementById('message').value;
+    if (message) {
+        socket.emit('chatMessage', { room, message, username });
+        document.getElementById('message').value = ''; // Clear input
+    }
+});
+
+    </script>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chat Room</h1>
+        <div id="messages"></div>
+        <input type="text" id="message" placeholder="Type a message">
+        <button id="send">Send</button>
+    </div>
+</body>
+</html>

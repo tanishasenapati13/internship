@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #002f6c, #0057b7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            height: 80vh;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 20%;
+            padding: 20px;
+            background: #f1f1f1;
+            overflow-y: auto;
+        }
+
+        /* Left Sidebar - Active Users */
+        .left {
+            border-right: 2px solid #ccc;
+        }
+
+        /* Right Sidebar - Available Rooms */
+        .right {
+            border-left: 2px solid #ccc;
+        }
+
+        /* Chat Box */
+        .chat-container {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #chatBox {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            background: #fff;
+            border-radius: 5px;
+            padding: 10px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+        }
+
+        #messageInput {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <!-- Active Users List -->
+        <div class="sidebar left">
+            <h3>Active Users</h3>
+            <ul id="activeUsers"></ul>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="chat-container">
+            <div id="loginPage">
+                <h2>Join Chat Room</h2>
+                <input type="text" id="username" placeholder="Enter your name" required>
+                <input type="text" id="room" placeholder="Enter room name" required>
+                <button onclick="joinChat()">Join Chat</button>
+            </div>
+
+            <div id="chatPage" style="display: none;">
+                <div id="chatBox">
+                    <div id="messages"></div>
+                    <input type="text" id="messageInput" placeholder="Type a message...">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Rooms List -->
+        <div class="sidebar right">
+            <h3>Available Rooms</h3>
+            <ul id="roomList"></ul>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        function joinChat() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('chatPage').style.display = 'block';
+        }
+
+        function sendMessage() {
+            let message = document.getElementById('messageInput').value;
+            if (message.trim() !== "") {
+                let msgDiv = document.createElement('div');
+                msgDiv.textContent = message;
+                document.getElementById('messages').appendChild(msgDiv);
+                document.getElementById('messageInput').value = '';
+            }
+        }
+    </script>
+
+</body>
+</html>

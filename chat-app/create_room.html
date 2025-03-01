@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Rooms</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .room-container {
+            width: 400px;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #25D366;
+        }
+
+        #room-list {
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .room-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #444;
+            cursor: pointer;
+        }
+
+        .room-item:hover {
+            background: #444;
+        }
+
+        .room-info {
+            flex-grow: 1;
+        }
+
+        .room-name {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .last-message {
+            font-size: 14px;
+            color: gray;
+        }
+
+        .participants {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        input {
+            background: #222;
+            color: white;
+        }
+
+        button {
+            background: #25D366;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="room-container">
+        <h1>Chat Rooms</h1>
+        
+        <h2>Available Rooms</h2>
+        <div id="room-list"></div>
+
+        <h2>Create a New Room</h2>
+        <input type="text" id="new-room-name" placeholder="Enter room name">
+        <button onclick="createRoom()">Create Room</button>
+
+        <h2>Join a Room</h2>
+        <input type="text" id="username" placeholder="Enter your username">
+        <input type="text" id="room-code" placeholder="Enter room code">
+        <button onclick="joinRoom()">Join</button>
+    </div>
+
+    <script type="module">
+        // Import Firebase modules
+        import { database } from "./firebase.js";
+        import { ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const roomList = document.getElementById("room-list");
+
+        // 🔹 Fetch available rooms from Firebase
+        function loadRooms() {
+            const roomsRef = ref(database, "rooms/");
+            onValue(roomsRef, (snapshot) => {
+                roomList.innerHTML = "";
+                snapshot.forEach((childSnapshot) => {
+                    const roomId = childSnapshot.key;
+                    const roomData = childSnapshot.val();
+                    const lastMessage = roomData.lastMessage || "No messages yet";
+                    const participants = roomData.participants ? Object.keys(roomData.participants).length : 0;
+
+                    const roomItem = document.createElement("div");
+                    roomItem.classList.add("room-item");
+                    roomItem.innerHTML = `
+                        <div class="room-info">
+                            <div class="room-name">${roomData.name}</div>
+                            <div class="last-message">${lastMessage}</div>
+                            <div class="participants">${participants} participants</div>
+                        </div>
+                    `;
+                    roomItem.onclick = () => joinRoom(roomData.name, roomId);
+                    roomList.appendChild(roomItem);
+                });
+            });
+        }
+
+        // 🔹 Function to create a new chat room
+        function createRoom() {
+            const roomName = document.getElementById("new-room-name").value.trim();
+            if (!roomName) {
+                alert("Please enter a room name!");
+                return;
+            }
+
+            const newRoomRef = push(ref(database, "rooms/"));
+            set(newRoomRef, { name: roomName, lastMessage: "", participants: {} })
+                .then(() => {
+                    alert("Room Created Successfully!");
+                    document.getElementById("new-room-name").value = "";
+                })
+                .catch(error => {
+                    console.error("Error creating room:", error);
+                    alert("Failed to create room.");
+                });
+        }
+
+        // 🔹 Function to join a chat room
+        function joinRoom(roomName = null, roomCode = null) {
+            const username = document.getElementById("username").value.trim();
+
+            if (!username) {
+                alert("Enter a username to join a room!");
+                return;
+            }
+
+            // If user manually enters room code
+            if (!roomName || !roomCode) {
+                roomCode = document.getElementById("room-code").value.trim();
+                if (!roomCode) {
+                    alert("Enter a valid room code!");
+                    return;
+                }
+            }
+
+            // Save user as a participant in Firebase
+            const roomRef = ref(database, `rooms/${roomCode}/participants/${username}`);
+            set(roomRef, true)  // Store user in Firebase properly
+
+            .then(() => {
+                // Store in localStorage for chat page access
+                localStorage.setItem("roomCode", roomCode);
+                localStorage.setItem("username", username);
+
+                // Redirect to chat
+                window.location.href = "chat.html";
+            })
+            .catch((error) => {
+                console.error("Error joining room:", error);
+                alert("Failed to join room. Please try again.");
+            });
+        }
+
+        // Load available rooms when the page loads
+        window.onload = loadRooms;
+    </script>
+
+</body>
+</html>

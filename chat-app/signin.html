@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat appliaction</title>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // ✅ Import Firebase Modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            GoogleAuthProvider, 
+            signInWithPopup, 
+            sendPasswordResetEmail 
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCV-BhFROBtMJq9C7Ugw7DwSyePXcIpySE",
+            authDomain: "recipe-tracker-634d1.firebaseapp.com",
+            projectId: "recipe-tracker-634d1",
+            storageBucket: "recipe-tracker-634d1.appspot.com", // 🔹 Fixed URL
+            messagingSenderId: "363210588745",
+            appId: "1:363210588745:web:71cc74a975eaf14ca47598"
+        };
+
+        // ✅ Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // ✅ Email & Password Login Function
+        async function emailSignIn(email, password) {
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log("User Logged In:", userCredential.user);
+                window.location.href = "create_room.html"; // Redirect after login
+            } catch (error) {
+                alert("Error logging in: " + error.message);
+            }
+        }
+
+        // ✅ Google Sign-In Function
+        async function googleSignIn() {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                console.log("Google Login Success:", result.user);
+                window.location.href = "create_room.html"; // Redirect after login
+            } catch (error) {
+                alert("Google Sign-In Error: " + error.message);
+            }
+        }
+
+        // ✅ Password Reset Function
+        async function resetPassword(email) {
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("Password reset email sent!");
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        // ✅ Attach Event Listeners After DOM Loads
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.classList.add("loaded");
+
+            const loginForm = document.getElementById('loginForm');
+            const googleLoginBtn = document.getElementById('googleLogin');
+            const forgotPasswordBtn = document.getElementById('forgotPassword');
+
+            // Email Login
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                await emailSignIn(email, password);
+            });
+
+            // Google Sign-In
+            googleLoginBtn.addEventListener('click', async () => {
+                await googleSignIn();
+            });
+
+            // Password Reset
+            forgotPasswordBtn.addEventListener('click', async () => {
+                const email = document.getElementById('email').value;
+                if (!email) {
+                    alert("Please enter your email.");
+                    return;
+                }
+                await resetPassword(email);
+            });
+        });
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #071739; opacity: 0; transition: opacity 0.8s ease-in-out; }
+        body.loaded { opacity: 1; }
+        .login-container { width: 350px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); text-align: center; }
+        .or-text { margin: 15px 0; color: #666; }
+        .google-login { display: flex; align-items: center; justify-content: center; background-color: white; color: black; border: 1px solid #ccc; cursor: pointer; padding: 10px; }
+        .google-login img { width: 20px; margin-right: 10px; }
+        h2 { margin-bottom: 20px; color: #333; }
+        input[type="email"], input[type="password"] { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px; }
+        button { width: 100%; padding: 10px; background: #e91e63; border: none; color: white; font-size: 16px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .forgot-password { display: block; margin-top: 10px; color: #e91e63; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>LOGIN</h2>
+        <form id="loginForm">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" required>
+
+            <button type="submit">LOGIN</button>
+
+            <br>
+            <p class="or-text">or</p>
+            <button id="googleLogin" type="button" class="google-login">
+                <img src="./assets/google-icon.jpg" alt="Google Logo"> Sign in with Google
+            </button>
+        </form>
+
+        <a href="#" class="forgot-password" id="forgotPassword">Forgot Password?</a>
+    </div>
+
+</body>
+</html>

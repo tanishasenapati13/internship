@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+<style>
+    body{
+    font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+    
+        #chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+    
+        h2, h3 {
+            text-align: center;
+            color: #333;
+        }
+    
+        #room-list {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+    
+        #room-list li {
+            background-color: #e4e7ed;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        #room-list li:hover {
+            background-color: #d0d5db;
+        }
+    
+        input[type="text"], input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+    
+        #send-button {
+            width: auto;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+    
+        #send-button:hover {
+            background-color: #45a049;
+        }
+    
+        #messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+    
+        #messages div {
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+    
+        .system-message {
+            color: #888;
+            font-style: italic;
+        }
+    
+        .user-message {
+            background-color: #e0f7fa;
+            text-align: left;
+        }
+    
+        .self-message {
+            background-color: #e8f5e9;
+            text-align: right;
+        }
+    
+        #chat-room {
+            display: none;
+            margin-top: 20px;
+        }
+    
+        #users {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+    
+        /* Styling for the Join Room Section */
+        #username, #room {
+            width: 45%;
+            display: inline-block;
+        }
+    
+        #username {
+            margin-right: 5%;
+        }
+    
+        #room {
+            margin-left: 5%;
+        }
+    
+        button {
+            background-color: #008CBA;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin-top: 20px;
+            width: 100%;
+        }
+    
+        button:hover {
+            background-color: #007B9E;
+        }
+    
+    .user-message {
+    background-color: #e0f7fa;
+    text-align: left;
+}
+
+.self-message {
+    background-color: #e8f5e9;
+    text-align: right;
+}
+
+.system-message {
+    color: #888;
+    font-style: italic;
+}
+    #chat-container {
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f9;
+    border-radius: 8px;
+}
+
+#join-room {
+    text-align: center;
+}
+
+#join-room input {
+    padding: 8px;
+    margin: 5px;
+    width: 200px;
+    border-radius: 4px;
+}
+
+#join-room button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+#chat-room {
+    display: none;
+}
+
+#current-room {
+    color: #007bff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#messages {
+    height: 300px;
+    overflow-y: scroll;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+#message-input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+#send-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+#users {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+.user-message {
+    background-color: #e0f7fa;
+    text-align: left;
+    padding: 5px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.self-message {
+    background-color: #e8f5e9;
+    text-align: right;
+    padding: 5px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.system-message {
+    color: #888;
+    font-style: italic;
+    font-size: 12px;
+}
+
+</style></head>
+<body>
+    <div id="chat-container">
+        <h2>Join a Chat Room</h2>
+        <div id="join-room">
+            <input type="text" id="username" placeholder="Enter Username">
+            <input type="text" id="room" placeholder="Enter Room Name">
+            <button id="join-room-btn">Join Room</button>
+        </div>
+        <div id="chat-room">
+            <h3>Chat Room: <span id="current-room"></span></h3>
+            <div id="messages"></div>
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+            <div id="users"></div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        document.getElementById('join-room-btn').addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const room = document.getElementById('room').value;
+            if (username && room) {
+                socket.emit('joinRoom', { username, room });
+            }
+        });
+
+        socket.on('usernameTaken', (message) => {
+            alert(message);
+        });
+
+        socket.on('availableRooms', (rooms) => {
+            console.log('Available rooms:', rooms);
+        });
+
+        socket.on('joinedRoom', (room) => {
+            document.getElementById('join-room').style.display = 'none';
+            document.getElementById('chat-room').style.display = 'block';
+            document.getElementById('current-room').textContent = room;
+        });
+
+        socket.on('message', (data) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = `${data.username} (${data.timestamp}): ${data.message}`;
+            if (data.username === 'System') {
+                messageDiv.classList.add('system-message');
+            } else if (data.senderId === socket.id) {
+                messageDiv.classList.add('self-message');
+            } else {
+                messageDiv.classList.add('user-message');
+            }
+            document.getElementById('messages').appendChild(messageDiv);
+        });
+
+        socket.on('updateUsers', (users) => {
+            const userList = document.getElementById('users');
+            userList.innerHTML = 'Users in room: ' + users.join(', ');
+        });
+
+        document.getElementById('send-button').addEventListener('click', () => {
+            const message = document.getElementById('message-input').value;
+            const room = document.getElementById('current-room').textContent;
+            if (message) {
+                socket.emit('chatMessage', { message, room });
+                document.getElementById('message-input').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
