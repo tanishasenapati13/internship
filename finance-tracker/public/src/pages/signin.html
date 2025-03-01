@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyMap - Login & Signup</title>
+    <script type="module" src="../js/auth.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #071739;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        .container {
+            display: flex;
+            width: 900px;
+            height: 500px;
+            background: #cdd5db;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .form-container {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .login-box, .signup-box {
+            width: 80%;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .signup-box {
+            opacity: 0;
+            transform: translateY(50px);
+            pointer-events: none;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #e91e63;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .forgot-password {
+            display: block;
+            margin-top: 30px;
+            color: #e91e63;
+            text-decoration: none;
+        }
+
+        .side-panel {
+            width: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            background-image: url('../assets/money-bkg.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .social-login button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: white;
+        }
+
+        .divider {
+            width: 100%; 
+            text-align: center; 
+            border-bottom: 1px solid #000; 
+            line-height: 0.1em;
+            margin: 10px 0 20px;
+        }
+
+        .divider span {
+            background: #f5eded; 
+            padding: 10px; 
+        }
+
+        .google { background: #db4437; }
+        .facebook { background: #3b5998; }
+        .linkedin { background: #0077b5; }
+
+        .logo img {
+            width: 300px;
+            border-radius: 15px;
+            background-color: #071739;
+        }
+
+        /* Smooth Transition Effect */
+        .show-signup .login-box {
+            opacity: 0;
+            transform: translateY(-50px);
+            pointer-events: none;
+        }
+
+        .show-signup .signup-box {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+            <div class="form-container">
+            <div class="login-box">
+                <h2>LOGIN</h2>
+                <form id="loginForm">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+
+                    <button type="submit">LOGIN</button><br><br><br>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+
+                    <div class="social-login">
+                        <button type="button" class="google" id="googleLogin">G</button>
+                        <button class="facebook">F</button>
+                        <button class="linkedin">L</button>
+                    </div>
+
+                </form>
+                <a href="#" class="forgot-password">Forgot Password?</a><br>
+
+                <p>Need an account? <a href="#" id="show-signup">SIGN UP</a></p>
+            </div>
+
+            <div class="signup-box">
+                <h2>SIGN UP</h2>
+                <form id="signupForm">
+                    <label for="new-email">Email</label>
+                    <input type="email" id="new-email" placeholder="Enter your email" required>
+
+                    <label for="new-password">Password</label>
+                    <input type="password" id="new-password" placeholder="Create a password" required>
+
+                    <button type="submit">SIGN UP</button><br><br><br>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+
+                    <div class="social-login">
+                        <button type="button" class="google" id="googleLogin">G</button>
+                        <button class="facebook">F</button>
+                        <button class="linkedin">L</button>
+                    </div>
+                </form><br>
+                <p>Already have an account? <a href="#" id="show-login">LOGIN</a></p>
+            </div>
+        </div>
+
+        <div class="side-panel">
+            <div class="logo">
+                <img src="../assets/logo.png" alt="Logo">
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Ensure smooth fade-in when the page loads
+        document.addEventListener("DOMContentLoaded", function () {
+            document.body.classList.add("loaded");
+        });
+
+        // Select elements
+        const container = document.querySelector(".container");
+        const showSignup = document.querySelector("#show-signup");
+        const showLogin = document.querySelector("#show-login");
+
+        // Toggle signup/login view
+        showSignup.addEventListener("click", function () {
+            container.classList.add("show-signup");
+        });
+
+        showLogin.addEventListener("click", function () {
+            container.classList.remove("show-signup");
+        });
+
+    </script>
+
+</body>
+</html> 
+
