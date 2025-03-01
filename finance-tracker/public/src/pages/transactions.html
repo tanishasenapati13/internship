@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income & Expense Tracker</title>
+    <style>
+        body {
+            background-color: #0d3552;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .summary-container, .income-container {
+            background: #082238;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .summary-container p, .income-container label {
+            margin: 5px 0;
+        }
+        input, select {
+            background: #1e4b6e;
+            border: none;
+            padding: 8px;
+            color: white;
+            margin-top: 5px;
+            width: 100%;
+            border-radius: 5px;
+        }
+        .tracker {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid white;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background: #d3d3d3;
+            color: black;
+        }
+        td {
+            background: #0d3552;
+        }
+        .add-btn {
+            background: #6c90b8;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: black;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .nav-btn {
+            font-size: 24px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="summary-container">
+        <h2>Monthly Overview</h2>
+        <p>Income: <span id="summaryIncome">0</span> <span id="currencySymbol"></span></p>
+        <p>Target: <span id="summaryTarget">0</span> <span id="currencySymbol"></span></p>
+        <p>Total Spent: <span id="totalSpent">0</span> <span id="currencySymbol"></span></p>
+    </div>
+
+    <div class="income-container">
+        <label>MONTHLY INCOME:</label>
+        <input type="number" id="incomeValue" placeholder="Enter income" oninput="saveIncomeAndTarget()"><br><br>
+
+        <label>TARGET:</label>
+        <input type="number" id="targetValue" placeholder="Enter target" oninput="saveIncomeAndTarget()">
+    </div>
+
+    <div class="income-container">
+        <h3>Add Expense</h3>
+        <label>Date:</label>
+        <input type="date" id="dateInput"><br><br>
+
+        <label>Tag:</label>
+        <select id="tagInput">
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Rent">Rent</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Bills">Bills</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="new">+ New Tag</option>
+        </select><br><br>
+
+        <label>Amount:</label>
+        <input type="number" id="amountInput" placeholder="Enter amount"><br><br>
+
+        <button class="add-btn" onclick="addTransaction()">+ Add Expense</button>
+    </div>
+
+    <div class="tracker">
+        <h2>
+            <span class="nav-btn" onclick="changeMonth(-1)">&#9664;</span>
+            <span id="monthYear"></span>
+            <span class="nav-btn" onclick="changeMonth(1)">&#9654;</span>
+        </h2>  
+        <hr><br>      
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Tag</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody id="expenseTable"></tbody>
+        </table>
+    </div>
+
+    <button class="add-btn" onclick="saveMonthlyData()">Save Data</button>
+    <button onclick="window.location.href='main.html'">Go to Summary</button>
+
+<script>
+let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
+window.onload = function () {
+    loadIncomeAndTarget();
+    updateMonthYear();
+    updateTransactions();
+};
+
+// Updates the displayed month and year
+function updateMonthYear() {
+    let date = new Date(currentYear, currentMonth);
+    document.getElementById("monthYear").innerText = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+    updateTransactions();
+}
+
+// Changes month forward or backward
+function changeMonth(direction) {
+    currentMonth += direction;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    updateMonthYear();
+}
+
+// Adds a new expense
+function addTransaction() {
+    let date = document.getElementById("dateInput").value;
+    let tag = document.getElementById("tagInput").value;
+    let amount = parseFloat(document.getElementById("amountInput").value) || 0;
+
+    if (!date || amount <= 0) {
+        alert("Please enter a valid date and amount.");
+        return;
+    }
+
+    if (tag === "new") {
+        let newTag = prompt("Enter new tag:");
+        if (newTag) {
+            let select = document.getElementById("tagInput");
+            let option = document.createElement("option");
+            option.value = newTag;
+            option.textContent = newTag;
+            select.appendChild(option);
+            select.value = newTag;
+            tag = newTag;
+        } else {
+            return;
+        }
+    }
+
+    transactions.push({ date, tag, amount, month: new Date(date).getMonth(), year: new Date(date).getFullYear() });
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+
+    updateTransactions();
+}
+
+// Saves income and target to localStorage
+function saveIncomeAndTarget() {
+    let income = parseFloat(document.getElementById("incomeValue").value) || 0;
+    let target = parseFloat(document.getElementById("targetValue").value) || 0;
+
+    localStorage.setItem("income", JSON.stringify({ income, target }));
+    loadIncomeAndTarget();
+}
+
+// Loads saved income and target values
+function loadIncomeAndTarget() {
+    let savedData = JSON.parse(localStorage.getItem("income")) || { income: 0, target: 0 };
+    document.getElementById("incomeValue").value = savedData.income;
+    document.getElementById("targetValue").value = savedData.target;
+    document.getElementById("summaryIncome").innerText = savedData.income;
+    document.getElementById("summaryTarget").innerText = savedData.target;
+}
+
+// Updates transactions table
+function updateTransactions() {
+    let filteredTransactions = transactions.filter(t => t.month === currentMonth && t.year === currentYear);
+    document.getElementById("expenseTable").innerHTML = filteredTransactions.map(t =>
+        `<tr><td>${t.date}</td><td>${t.tag}</td><td>${t.amount}</td></tr>`).join("");
+
+    updateMonthlyOverview();
+}
+
+// Saves all expense data
+function saveMonthlyData() {
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+    alert("Data Saved!");
+}
+</script>
+
+</body>
+</html>
