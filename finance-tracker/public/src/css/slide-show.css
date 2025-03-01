@@ -1,0 +1,102 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 🟢 Fullscreen Slideshow Container */
+.slideshow-container {
+    position: relative;
+    width: 100vw; /* Full screen width */
+    height: 100vh; /* Full screen height */
+    overflow: hidden;
+}
+
+/* 🟢 Slide Full Width + 75% Height */
+.slide {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.slide:nth-child(1) { background-color: #b9c7d2; }
+.slide:nth-child(2) { background-color: white; }
+.slide:nth-child(3) { background-color: #a1b391; }
+.slide:nth-child(4) { background-color: white; }
+
+.slide.active {
+    display: flex;
+}
+
+/* 🟢 Background Image Covers Full Area */
+.background-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* 🟢 Content Centered */
+.content {
+    text-align: center;
+    color: #732f47;
+    position: relative;
+}
+
+/* 🟢 Start Now Button Styling */
+#startNow {
+    margin-top: 600px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #db5a92;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#startNow:hover {
+    background-color: #b84b7c;
+}
+
+/* 🟢 Navigation Arrows */
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.prev { left: 10px; }
+.next { right: 10px; }
+
+/* Hide Previous Button on First Slide */
+.prev {
+    display: none;
+}
