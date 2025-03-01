@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Text Slider</title>
+    <link rel="icon" href="pictures/Screenshot 2025-02-03 221052.png" type="image/x-icon" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: beige;
+            margin: 0;
+            position: relative;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('../pictures/food-bkg.png') center/cover no-repeat;
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .black-box {
+            background: black;
+            padding: 50px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .image-container {
+            display: flex;
+            gap: 70px;
+        }
+        .image-container img {
+            width: 300px;
+            height: auto;
+            border-radius: 15px;
+        }
+        .text-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 55px;
+            font-weight: bold;
+            font-family: 'Times New Roman', Times, serif;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 1s;
+            text-align: center;
+            width: 100%;
+        }
+        .text-overlay.active {
+            opacity: 1;
+        }
+        .next-button {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: black;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .next-button.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="black-box">
+        <div class="image-container">
+            <img src="../pictures/food image 1.jpg" alt="Healthy Bowl 1">
+            <img src="../pictures/food image 2.jpg" alt="Healthy Bowl 2">
+            <img src="../pictures/food image 3.jpg" alt="Healthy Bowl 3">
+        </div>
+    </div>
+    <div id="text1" class="text-overlay">COOK SMART</div>
+    <div id="text2" class="text-overlay">EAT HEALTHY</div>
+    <div id="text3" class="text-overlay">FEEL AMAZING</div>
+    <button id="nextBtn" class="next-button">Next</button>
+
+    <script>
+        let texts = ["text1", "text2", "text3"];
+        let index = 0;
+
+        function showText() {
+            if (index > 0) {
+                document.getElementById(texts[index - 1]).classList.remove("active");
+            }
+            if (index < texts.length) {
+                document.getElementById(texts[index]).classList.add("active");
+                index++;
+                setTimeout(showText, 1500); // Change text every 2 seconds
+            } else {
+                document.getElementById("nextBtn").classList.add("show");
+            }
+        }
+        
+        document.getElementById("nextBtn").addEventListener("click", function() {
+            window.location.href = "main.html"; // Redirect to main page
+        });
+
+        setTimeout(showText, 1000);
+    </script>
+</body>
+</html>
