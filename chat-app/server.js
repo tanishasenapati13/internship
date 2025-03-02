@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
     console.log('A user connected: ', socket.id);
 
     // Emit available rooms to the client
-    socket.emit('availableRooms', Object.keys(rooms));
+    socket.emit('availableRooms', getAvailableRooms());
 
     socket.on('joinRoom', ({ username, room }) => {
         // Check if username is unique within the room
@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
         });
 
         // Update all clients with the available rooms
-        io.emit('availableRooms', Object.keys(rooms));
+        io.emit('availableRooms', getAvailableRooms());
         io.to(room).emit('updateUsers', getUsersInRoom(room));
         socket.emit('joinedRoom', room);
     });
@@ -56,47 +56,62 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        let username;
+        let disconnectedUser = null;
+        let userRoom = null;
+
         for (const room in rooms) {
             for (const user in rooms[room].users) {
                 if (rooms[room].users[user].socketId === socket.id) {
-                    username = user;
+                    disconnectedUser = user;
+                    userRoom = room;
                     delete rooms[room].users[user];
+
                     if (Object.keys(rooms[room].users).length === 0) {
-                        delete rooms[room];
-                    } else {
-                        io.to(room).emit('updateUsers', getUsersInRoom(room));
+                        delete rooms[room]; // Remove empty room
                     }
+
                     break;
                 }
             }
         }
-        if (username) {
-            io.emit('availableRooms', Object.keys(rooms));
-            io.emit('message', {
+
+        if (disconnectedUser && userRoom) {
+            io.to(userRoom).emit('updateUsers', getUsersInRoom(userRoom));
+            io.emit('availableRooms', getAvailableRooms());
+            io.to(userRoom).emit('message', {
                 username: 'System',
-                message: `${username} has left the room.`,
+                message: `${disconnectedUser} has left the room.`,
                 timestamp: new Date().toLocaleTimeString()
             });
         }
     });
+});
 
-    function getUsersInRoom(room) {
-        if (!rooms[room]) return [];
-        return Object.keys(rooms[room].users);
+// Helper function to get users in a room
+function getUsersInRoom(room) {
+    return rooms[room] ? Object.keys(rooms[room].users) : [];
+}
+
+// Helper function to get available rooms
+function getAvailableRooms() {
+    const formattedRooms = {};
+    for (const room in rooms) {
+        formattedRooms[room] = Object.keys(rooms[room].users).length; // Count users
     }
+    return formattedRooms;
+}
 
-    function getUsernameBySocketId(socketId) {
-        for (const room in rooms) {
-            for (const user in rooms[room].users) {
-                if (rooms[room].users[user].socketId === socketId) {
-                    return user;
-                }
+// Helper function to get username by socket ID
+function getUsernameBySocketId(socketId) {
+    for (const room in rooms) {
+        for (const user in rooms[room].users) {
+            if (rooms[room].users[user].socketId === socketId) {
+                return user;
             }
         }
-        return null;
     }
-});
+    return null;
+}
 
 server.listen(3000, () => {
     console.log('Server is running on port 3000');
