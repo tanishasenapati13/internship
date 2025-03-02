@@ -18,16 +18,13 @@
             margin-bottom: 20px;
             font-size: 18px;
         }
-        .summary-container p, .income-container label {
-            margin: 5px 0;
-        }
         input, select {
             background: #1e4b6e;
             border: none;
             padding: 8px;
             color: white;
             margin-top: 5px;
-            width: 100%;
+            width: 50%;
             border-radius: 5px;
         }
         .tracker {
@@ -49,38 +46,35 @@
         td {
             background: #0d3552;
         }
-        .add-btn {
+        .add-btn, .save-btn, .summary-btn {
             background: #6c90b8;
             border: none;
             padding: 10px;
             cursor: pointer;
             border-radius: 5px;
             color: black;
-            width: 100%;
+            width: 30%;
             margin-top: 10px;
-        }
-        .nav-btn {
-            font-size: 24px;
-            cursor: pointer;
-            margin: 0 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="summary-container">
+    <div class="summary-container" id="summarySection">
         <h2>Monthly Overview</h2>
-        <p>Income: <span id="summaryIncome">0</span> <span id="currencySymbol"></span></p>
-        <p>Target: <span id="summaryTarget">0</span> <span id="currencySymbol"></span></p>
-        <p>Total Spent: <span id="totalSpent">0</span> <span id="currencySymbol"></span></p>
+        <p><strong>Income:</strong> <span id="monthlyIncome">0</span></p>
+        <p><strong>Target:</strong> <span id="monthlyTarget">0</span></p>
+        <p><strong>Total Spent:</strong> <span id="totalSpent">0</span></p>
     </div>
+    
 
     <div class="income-container">
         <label>MONTHLY INCOME:</label>
-        <input type="number" id="incomeValue" placeholder="Enter income" oninput="saveIncomeAndTarget()"><br><br>
+        <input type="number" id="incomeValue" placeholder="Enter income"><br><br>
 
         <label>TARGET:</label>
-        <input type="number" id="targetValue" placeholder="Enter target" oninput="saveIncomeAndTarget()">
+        <input type="number" id="targetValue" placeholder="Enter target"><br><br>
+
     </div>
 
     <div class="income-container">
@@ -89,15 +83,7 @@
         <input type="date" id="dateInput"><br><br>
 
         <label>Tag:</label>
-        <select id="tagInput">
-            <option value="Food">Food</option>
-            <option value="Transport">Transport</option>
-            <option value="Rent">Rent</option>
-            <option value="Shopping">Shopping</option>
-            <option value="Bills">Bills</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="new">+ New Tag</option>
-        </select><br><br>
+        <select id="tagInput" onchange="handleNewTag()"></select><br><br>
 
         <label>Amount:</label>
         <input type="number" id="amountInput" placeholder="Enter amount"><br><br>
@@ -106,56 +92,72 @@
     </div>
 
     <div class="tracker">
-        <h2>
-            <span class="nav-btn" onclick="changeMonth(-1)">&#9664;</span>
-            <span id="monthYear"></span>
-            <span class="nav-btn" onclick="changeMonth(1)">&#9654;</span>
-        </h2>  
-        <hr><br>      
+        <h2><span id="monthYear"></span></h2>
         <table>
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Tag</th>
                     <th>Amount</th>
+                    <th>Action</th> <!-- New Column for Delete Buttons -->
                 </tr>
             </thead>
             <tbody id="expenseTable"></tbody>
         </table>
     </div>
 
-    <button class="add-btn" onclick="saveMonthlyData()">Save Data</button>
-    <button onclick="window.location.href='main.html'">Go to Summary</button>
+    <div class="income-container">
+    <button class="save-btn" onclick="saveData()">Save Data</button>
+    <button class="summary-btn" onclick="goToSummary()">Go to Summary</button>
+    </div>
 
 <script>
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+let tags = JSON.parse(localStorage.getItem("tags")) || ["Food", "Transport", "Rent", "Shopping", "Bills", "Entertainment"];
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 
+// Load everything on page load
 window.onload = function () {
-    loadIncomeAndTarget();
+    loadSavedData();
     updateMonthYear();
-    updateTransactions();
+    loadTags(); // Ensure tags are loaded at page load
 };
 
-// Updates the displayed month and year
-function updateMonthYear() {
-    let date = new Date(currentYear, currentMonth);
-    document.getElementById("monthYear").innerText = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-    updateTransactions();
+// Load tags into dropdown
+function loadTags() {
+    let tagDropdown = document.getElementById("tagInput");
+    tagDropdown.innerHTML = ""; // Clear existing options
+
+    // Add existing tags to dropdown
+    tags.forEach(tag => {
+        let option = document.createElement("option");
+        option.value = tag;
+        option.textContent = tag;
+        tagDropdown.appendChild(option);
+    });
+
+    // Add "+ New Tag" option
+    let newTagOption = document.createElement("option");
+    newTagOption.value = "new";
+    newTagOption.textContent = "+ New Tag";
+    tagDropdown.appendChild(newTagOption);
 }
 
-// Changes month forward or backward
-function changeMonth(direction) {
-    currentMonth += direction;
-    if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-    } else if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
+// Handle "+ New Tag" selection
+function handleNewTag() {
+    let tagDropdown = document.getElementById("tagInput");
+    if (tagDropdown.value === "new") {
+        let newTag = prompt("Enter new tag:");
+        if (newTag) {
+            tags.push(newTag);
+            localStorage.setItem("tags", JSON.stringify(tags)); // Save new tag
+            loadTags(); // Reload dropdown with new tag added
+            tagDropdown.value = newTag; // Set new tag as selected
+        } else {
+            tagDropdown.value = tags[0]; // Reset selection if no input
+        }
     }
-    updateMonthYear();
 }
 
 // Adds a new expense
@@ -169,59 +171,85 @@ function addTransaction() {
         return;
     }
 
-    if (tag === "new") {
-        let newTag = prompt("Enter new tag:");
-        if (newTag) {
-            let select = document.getElementById("tagInput");
-            let option = document.createElement("option");
-            option.value = newTag;
-            option.textContent = newTag;
-            select.appendChild(option);
-            select.value = newTag;
-            tag = newTag;
-        } else {
-            return;
-        }
-    }
-
     transactions.push({ date, tag, amount, month: new Date(date).getMonth(), year: new Date(date).getFullYear() });
     localStorage.setItem("transactions", JSON.stringify(transactions));
 
     updateTransactions();
 }
 
-// Saves income and target to localStorage
-function saveIncomeAndTarget() {
+
+// Loads saved income, target, and transactions
+// Loads saved income, target, and transactions
+function loadSavedData() {
+    let savedData = JSON.parse(localStorage.getItem("income")) || { income: 0, target: 0 };
+    
+    document.getElementById("incomeValue").value = savedData.income;
+    document.getElementById("targetValue").value = savedData.target;
+
+    // Update overview section
+    document.getElementById("monthlyIncome").innerText = savedData.income;
+    document.getElementById("monthlyTarget").innerText = savedData.target;
+
+    updateTransactions();
+}
+
+// Saves income and target to localStorage and updates the UI
+// Saves all data to localStorage
+function saveData() {
     let income = parseFloat(document.getElementById("incomeValue").value) || 0;
     let target = parseFloat(document.getElementById("targetValue").value) || 0;
 
     localStorage.setItem("income", JSON.stringify({ income, target }));
-    loadIncomeAndTarget();
+
+    // Update overview section
+    document.getElementById("monthlyIncome").innerText = income;
+    document.getElementById("monthlyTarget").innerText = target;
+
+    alert("Data saved successfully!");
 }
 
-// Loads saved income and target values
-function loadIncomeAndTarget() {
-    let savedData = JSON.parse(localStorage.getItem("income")) || { income: 0, target: 0 };
-    document.getElementById("incomeValue").value = savedData.income;
-    document.getElementById("targetValue").value = savedData.target;
-    document.getElementById("summaryIncome").innerText = savedData.income;
-    document.getElementById("summaryTarget").innerText = savedData.target;
-}
-
-// Updates transactions table
+// Updates transactions table and total spent
+// Updates transactions table and total spent
 function updateTransactions() {
     let filteredTransactions = transactions.filter(t => t.month === currentMonth && t.year === currentYear);
-    document.getElementById("expenseTable").innerHTML = filteredTransactions.map(t =>
-        `<tr><td>${t.date}</td><td>${t.tag}</td><td>${t.amount}</td></tr>`).join("");
+    
+    document.getElementById("expenseTable").innerHTML = filteredTransactions.map((t, index) =>
+        `<tr>
+            <td>${t.date}</td>
+            <td>${t.tag}</td>
+            <td>${t.amount}</td>
+            <td><button class="delete-btn" onclick="deleteTransaction(${index})">❌</button></td>
+        </tr>`).join("");
 
-    updateMonthlyOverview();
+    document.getElementById("totalSpent").innerText = filteredTransactions.reduce((sum, t) => sum + t.amount, 0);
 }
 
-// Saves all expense data
-function saveMonthlyData() {
+// Deletes a transaction
+function deleteTransaction(index) {
+    let filteredTransactions = transactions.filter(t => t.month === currentMonth && t.year === currentYear);
+    let transactionToDelete = filteredTransactions[index];
+
+    // Find and remove the exact transaction from the original array
+    transactions = transactions.filter(t => !(t.date === transactionToDelete.date && t.tag === transactionToDelete.tag && t.amount === transactionToDelete.amount));
+    
+    // Update localStorage and UI
     localStorage.setItem("transactions", JSON.stringify(transactions));
-    alert("Data Saved!");
+    updateTransactions();
 }
+
+
+// Updates the displayed month and year
+function updateMonthYear() {
+    let date = new Date(currentYear, currentMonth);
+    document.getElementById("monthYear").innerText = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+    updateTransactions();
+}
+
+// Scrolls to summary section
+function goToSummary() {
+    window.location.href = "main.html"; // Redirects to main.html
+}
+
 </script>
 
 </body>
