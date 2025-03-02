@@ -18,6 +18,17 @@
             margin-bottom: 20px;
             font-size: 18px;
         }
+        .nav-btn {
+            background: #6c90b8;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            color: black;
+            margin: 5px;
+            font-size: 16px;
+        }
+
         input, select {
             background: #1e4b6e;
             border: none;
@@ -62,10 +73,14 @@
 
     <div class="summary-container" id="summarySection">
         <h2>Monthly Overview</h2>
+        <button class="nav-btn" onclick="changeMonth(-1)">◀ Previous Month</button>
+        <button class="nav-btn" onclick="changeMonth(1)">Next Month ▶</button>
+        <h2><span id="monthYear"></span></h2>
         <p><strong>Income:</strong> <span id="monthlyIncome">0</span></p>
         <p><strong>Target:</strong> <span id="monthlyTarget">0</span></p>
         <p><strong>Total Spent:</strong> <span id="totalSpent">0</span></p>
     </div>
+    
     
 
     <div class="income-container">
@@ -142,6 +157,29 @@ function loadTags() {
     newTagOption.value = "new";
     newTagOption.textContent = "+ New Tag";
     tagDropdown.appendChild(newTagOption);
+}
+// Function to navigate months
+function changeMonth(step) {
+    currentMonth += step;
+
+    // Adjust year if month overflows
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+
+    updateMonthYear();
+}
+
+// Updates the displayed month and year
+function updateMonthYear() {
+    let date = new Date(currentYear, currentMonth);
+    document.getElementById("monthYear").innerText = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    updateTransactions();
 }
 
 // Handle "+ New Tag" selection
