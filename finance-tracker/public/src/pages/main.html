@@ -14,76 +14,76 @@
             padding: 0;
         }
 
-/* 🔹 LOGO SECTION */
-.logo-container {
-    text-align:left;
-    margin-bottom: 20px;
-    margin-top: 0px;
-    margin-left: 60px;
-    background-color: #0d3552;
-}
+        /* 🔹 LOGO SECTION */
+        .logo-container {
+            text-align:left;
+            margin-bottom: 20px;
+            margin-top: 0px;
+            margin-left: 60px;
+            background-color: #0d3552;
+        }
 
-.logo-container img {
-    width: 150px; /* Adjust size as needed */
-    height: auto;
-    border-radius: 8px; /* Optional: Adds rounded corners */
-}
+        .logo-container img {
+            width: 150px; /* Adjust size as needed */
+            height: auto;
+            border-radius: 8px; /* Optional: Adds rounded corners */
+        }
 
-/* 🔹 INPUT SECTION */
-.input-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+        /* 🔹 INPUT SECTION */
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
-input {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    width: 220px;
-    text-align: center;
-}
+        input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            width: 220px;
+            text-align: center;
+        }
 
-button {
-    background: #0d3552;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    font-size: 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
+        button {
+            background: #0d3552;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
 
-button:hover {
-    background: #1b4a70;
-}
+        button:hover {
+            background: #1b4a70;
+        }
 
-/* 🔹 SUMMARY BOX */
-.summary-container {
-    background: #0d3552;
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    margin: 0 auto;
-    text-align: left;
-    font-size: 20px;
-}
+        /* 🔹 SUMMARY BOX */
+        .summary-container {
+            background: #0d3552;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: left;
+            font-size: 20px;
+        }
 
-.summary-container p {
-    margin: 10px 0;
-    font-weight: bold;
-}
+        .summary-container p {
+            margin: 10px 0;
+            font-weight: bold;
+        }
 
-/* 🔹 CHART SECTION */
-.chart-container {
-    margin-top: 30px;
-}
+        /* 🔹 CHART SECTION */
+        .chart-container {
+            margin-top: 30px;
+        }
 
         .sidebar {
             width: 80px;
@@ -133,65 +133,12 @@ button:hover {
             height: 150px !important;
         }
         body {
-    background-color: #f0f4f8;
-    font-family: 'Arial', sans-serif;
-    color: #333;
-    text-align: center;
-    padding: 20px;
-}
-
-.input-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px; /* Creates space between input and summary */
-}
-
-input {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    width: 220px;
-    text-align: center;
-}
-
-button {
-    background: #0d3552;
-    color: white;
-    border: none;
-    padding: 12px 18px;
-    font-size: 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-button:hover {
-    background: #1b4a70;
-}
-
-.summary-container {
-    background: #0d3552;
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    margin: 0 auto;
-    text-align: left;
-    font-size: 20px;
-}
-
-.summary-container p {
-    margin: 10px 0;
-    font-weight: bold;
-}
-
-.chart-container {
-    margin-top: 30px;
-}
+            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
 
     </style>
 </head>
@@ -201,16 +148,19 @@ button:hover {
         <img src="../assets/logo.png" alt="App Logo">
     </div>
 
-    
-
-    <div class="sidebar">
-    </div>
+    <label for="currency">Select Currency: </label>
+    <select id="currency" onchange="updateCurrency()">
+        <option value="USD">$ USD</option>
+        <option value="EUR">€ EUR</option>
+        <option value="GBP">£ GBP</option>
+        <option value="INR">₹ INR</option>
+    </select>
 
     <label for="income">Enter Your Annual Income: </label>
     <input type="number" id="income" placeholder="Enter amount" onchange="updateIncome()" required>
 
     <button onclick="window.location.href='transactions.html'">+ Add Transaction</button>
-    <br><Br><hr>
+    <br><br><hr>
 
     <div class="container">
         <div class="header">
@@ -229,9 +179,10 @@ button:hover {
     <script>
         let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
         let savedIncome = parseFloat(localStorage.getItem("income")) || 120000;
+        let currencySymbol = "$"; // Default currency
 
         function formatNumber(num) {
-            return num.toLocaleString();
+            return currencySymbol + num.toLocaleString();
         }
 
         function updateDashboard() {
@@ -249,6 +200,16 @@ button:hover {
             savedIncome = income;
             updateDashboard();
         }
+
+        function updateCurrency() {
+    const currencySelect = document.getElementById("currency");
+    currencySymbol = currencySelect.value === "USD" ? "$" :
+                     currencySelect.value === "EUR" ? "€" :
+                     currencySelect.value === "GBP" ? "£" : "₹";
+    updateDashboard();
+    createMonthlyPieCharts(); // 🔹 Refresh the pie charts with the new currency
+}
+
 
         function createExpenseChart() {
             let ctx = document.getElementById("expenseChart").getContext("2d");
@@ -276,7 +237,7 @@ button:hover {
         function createMonthlyPieCharts() {
             let container = document.getElementById("monthlyCharts");
             container.innerHTML = "";
-            
+
             let monthlyData = Array(12).fill().map(() => ({}));
             transactions.forEach(t => {
                 let monthIndex = new Date(t.date).getMonth();
@@ -286,16 +247,16 @@ button:hover {
                 }
                 monthlyData[monthIndex][category] += parseFloat(t.amount || 0);
             });
-            
+
             monthlyData.forEach((categories, index) => {
                 let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 let totalSpent = Object.values(categories).reduce((a, b) => a + b, 0);
                 let canvasId = `monthChart-${index}`;
                 let div = document.createElement("div");
                 div.classList.add("month-chart");
-                div.innerHTML = `<h4>${monthNames[index]}</h4><p>Spent: $${formatNumber(totalSpent)}</p><canvas id="${canvasId}"></canvas>`;
+                div.innerHTML = `<h4>${monthNames[index]}</h4><p>Spent: ${formatNumber(totalSpent)}</p><canvas id="${canvasId}"></canvas>`;
                 container.appendChild(div);
-                
+
                 let ctx = document.getElementById(canvasId).getContext("2d");
                 new Chart(ctx, {
                     type: "pie",
