@@ -9,7 +9,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCV-BhFROBtMJq9C7Ugw7DwSyePXcIpySE",
     authDomain: "recipe-tracker-634d1.firebaseapp.com",
     projectId: "recipe-tracker-634d1",
     storageBucket: "recipe-tracker-634d1.firebasestorage.app",
