@@ -4,11 +4,6 @@
 
 // // Firebase Configuration (Replace with your own credentials)
 // const firebaseConfig = {
-//     authDomain: "recipe-tracker-634d1.firebaseapp.com",
-//     projectId: "recipe-tracker-634d1",
-//     storageBucket: "recipe-tracker-634d1.firebasestorage.app",
-//     messagingSenderId: "363210588745",
-//     appId: "1:363210588745:web:71cc74a975eaf14ca47598"
 //   };
 
 // // Initialize Firebase
@@ -122,11 +117,6 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPasswor
 
 // Firebase Configuration (Replace with your own credentials)
 const firebaseConfig = {
-    authDomain: "recipe-tracker-634d1.firebaseapp.com",
-    projectId: "recipe-tracker-634d1",
-    storageBucket: "recipe-tracker-634d1.firebasestorage.app",
-    messagingSenderId: "363210588745",
-    appId: "1:363210588745:web:71cc74a975eaf14ca47598"
 };
 
 // Initialize Firebase
@@ -190,11 +180,6 @@ document.getElementById('forgotPassword').addEventListener('click', async () => 
     }
 });
 // const firebaseConfig = {
-//         authDomain: "recipe-tracker-634d1.firebaseapp.com",
-//         projectId: "recipe-tracker-634d1",
-//         storageBucket: "recipe-tracker-634d1.firebasestorage.app",
-//         messagingSenderId: "363210588745",
-//         appId: "1:363210588745:web:71cc74a975eaf14ca47598"
 //     };
 // firebase.initializeApp(firebaseConfig);
 // const db = firebase.firestore();
