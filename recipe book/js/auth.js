@@ -4,7 +4,6 @@
 
 // // Firebase Configuration (Replace with your own credentials)
 // const firebaseConfig = {
-//     apiKey: "AIzaSyCV-BhFROBtMJq9C7Ugw7DwSyePXcIpySE",
 //     authDomain: "recipe-tracker-634d1.firebaseapp.com",
 //     projectId: "recipe-tracker-634d1",
 //     storageBucket: "recipe-tracker-634d1.firebasestorage.app",
@@ -123,7 +122,6 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPasswor
 
 // Firebase Configuration (Replace with your own credentials)
 const firebaseConfig = {
-    apiKey: "AIzaSyCV-BhFROBtMJq9C7Ugw7DwSyePXcIpySE",
     authDomain: "recipe-tracker-634d1.firebaseapp.com",
     projectId: "recipe-tracker-634d1",
     storageBucket: "recipe-tracker-634d1.firebasestorage.app",
@@ -192,7 +190,6 @@ document.getElementById('forgotPassword').addEventListener('click', async () => 
     }
 });
 // const firebaseConfig = {
-//         apiKey: "AIzaSyCV-BhFROBtMJq9C7Ugw7DwSyePXcIpySE",
 //         authDomain: "recipe-tracker-634d1.firebaseapp.com",
 //         projectId: "recipe-tracker-634d1",
 //         storageBucket: "recipe-tracker-634d1.firebasestorage.app",
