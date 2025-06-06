@@ -9,11 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-    authDomain: "recipe-tracker-634d1.firebaseapp.com",
-    projectId: "recipe-tracker-634d1",
-    storageBucket: "recipe-tracker-634d1.firebasestorage.app",
-    messagingSenderId: "363210588745",
-    appId: "1:363210588745:web:71cc74a975eaf14ca47598"
+   // input your firebase credentials
 };
 
 // Initialize Firebase
